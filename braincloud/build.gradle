@@ -34,7 +34,7 @@ dependencies {
     implementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    api 'com.bitheads.braincloud:braincloud-java-api:1'
+    api 'com.bitheads.braincloud:braincloud-java-api:4.14.0'
 }
 
 afterEvaluate{
