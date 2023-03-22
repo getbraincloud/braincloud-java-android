@@ -56,7 +56,7 @@ afterEvaluate{
 
                 pom {
                     name = 'brainCloud Java API (Android)'
-                    description = 'The Java client library for brainCloud'
+                    description = 'The Java-Android client library for brainCloud'
                     url = 'https://github.com/getbraincloud/braincloud-java-android'
 
                     licenses {
@@ -82,6 +82,10 @@ afterEvaluate{
                 url = "${project.buildDir}/repo"
             }
         }
+    }
+
+    signing{
+        sign publishing.publications.release
     }
 }
 
