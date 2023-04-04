@@ -1,9 +1,15 @@
 package com.bitheads.braincloud.services;
 
+import android.content.Context;
+
+import androidx.test.platform.app.InstrumentationRegistry;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,20 +95,20 @@ public class TestFixtureBase {
     private void LoadIds() {
         if (m_serverUrl.length() > 0) return;
 
-        File idsFile = new File("ids.txt");
+        Context ctx = InstrumentationRegistry.getInstrumentation().getContext();
+        InputStream is = null;
         try {
-            System.out.println("Looking for ids.txt file in " + idsFile.getCanonicalPath());
+            is = ctx.getAssets().open("ids.txt");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error opening ids.txt");
+            throw new RuntimeException(e);
         }
-
-        if (idsFile.exists()) System.out.println("Found ids.txt file");
 
         List<String> lines = new ArrayList<>();
         BufferedReader reader = null;
 
         try {
-            reader = new BufferedReader(new FileReader(idsFile));
+            reader = new BufferedReader(new InputStreamReader(is));
             String text;
             while ((text = reader.readLine()) != null) {
                 lines.add(text);
@@ -149,6 +155,8 @@ public class TestFixtureBase {
                 case "redirectAppId":
                     m_redirectAppId = split[1];
                     break;
+                default:
+                    System.out.println("Error reading ids.txt");
             }
         }
     }
