@@ -101,28 +101,18 @@ public class TestFixtureBase {
             is = ctx.getAssets().open("ids.txt");
         } catch (IOException e) {
             System.out.println("Error opening ids.txt");
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
         List<String> lines = new ArrayList<>();
-        BufferedReader reader = null;
 
-        try {
-            reader = new BufferedReader(new InputStreamReader(is));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))){
             String text;
             while ((text = reader.readLine()) != null) {
                 lines.add(text);
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
 
         for (String line : lines) {
