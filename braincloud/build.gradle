@@ -85,8 +85,19 @@ afterEvaluate{
         }
         repositories {
             maven {
+                //  publish to local build dir
                 name = 'myrepo'
                 url = "${project.buildDir}/repo"
+
+                // publish to remote repo
+                /*
+                url = nexusURL
+                //allowInsecureProtocol = true
+                credentials{
+                    username nexusUser
+                    password nexusPass
+                }
+                 */
             }
         }
     }
