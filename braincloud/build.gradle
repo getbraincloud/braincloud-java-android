@@ -96,7 +96,9 @@ afterEvaluate{
                 //
                 name = 'nexus'
                 url = nexusURL
-                //allowInsecureProtocol = true
+
+                allowInsecureProtocol = true
+
                 credentials{
                     username nexusUser
                     password nexusPass
