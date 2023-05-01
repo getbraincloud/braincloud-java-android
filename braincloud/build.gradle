@@ -78,6 +78,14 @@ afterEvaluate{
                         developerConnection = 'scm:git:ssh://github.com/getbraincloud/braincloud-java-android'
                         url = 'https://github.com/getbraincloud/braincloud-java-android'
                     }
+
+                    developers {
+                        developer {
+                            id = 'paulw'
+                            name = 'Paul Winterhalder'
+                            email = 'paulw@bitheads.com'
+                        }
+                    }
                 }
 
                 from components.release
@@ -90,20 +98,15 @@ afterEvaluate{
                 name = 'myrepo'
                 url = "${project.buildDir}/repo"
                 */
-                //
 
                 /* publish to remote repo */
-                //
-                name = 'nexus'
-                url = nexusURL
-
-                allowInsecureProtocol = true
+                url = ossrhUrl
 
                 credentials{
-                    username nexusUser
-                    password nexusPass
+                    username ossrhUser
+                    password ossrhPass
                 }
-                //
+
             }
         }
     }
