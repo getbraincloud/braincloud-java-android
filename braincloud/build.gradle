@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'com.getbraincloud'
+    namespace 'com.bitheads'
     compileSdk 33
 
     defaultConfig {
@@ -50,14 +50,14 @@ dependencies {
     implementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    api 'com.bitheads.braincloud:braincloud-java-api:4.14.0'
+    api 'com.bitheads:braincloud-java-api:4.14.0'
 }
 
 afterEvaluate{
     publishing {
         publications{
             release(MavenPublication){
-                groupId = 'com.getbraincloud'
+                groupId = 'com.bitheads'
                 artifactId = 'braincloud-java-android'
                 version '4.14.0'
 
@@ -81,9 +81,9 @@ afterEvaluate{
 
                     developers {
                         developer {
-                            id = 'paulw'
-                            name = 'Paul Winterhalder'
-                            email = 'paulw@bitheads.com'
+                            id = 'bc-client-team'
+                            name = 'brainCloud Client Team'
+                            email = 'bc-client-team@bitheads.com'
                         }
                     }
                 }
