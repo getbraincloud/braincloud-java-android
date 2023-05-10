@@ -14,7 +14,20 @@ https://github.com/getbraincloud/braincloud-java
 
 ## Releases
 
-*Maven Central*
+Now on Maven Central!
+
+The brainCloud Java-Android client library is published under the com.bitheads namespace on Maven Central: 
+
+https://central.sonatype.com/artifact/com.bitheads/braincloud-java-android/
+
+### Gradle Dependency
+Add the following to a build.gradle:
+
+```
+implementation 'com.bitheads:braincloud-java-android:4.14.1'
+```
+
+Note that for Android projects ```BrainCloudWrapperAndroid``` should be used instead of ```BrainCloudWrapper```
 
 ## Examples
 
@@ -50,7 +63,7 @@ It is recommended to use the wrapper by default.
 ## How do I initialize brainCloud?
 If using the wrapper use the following code.
 ```java
-_bc = new BrainCloudWrapper(); // optionally pass in a _wrapperName
+_bc = new BrainCloudWrapperAndroid(); // optionally pass in a _wrapperName
 _bc.initialize(_appId, _secret, _appVersion); // optionally pass in an _applicationContext
 ```
 On Android, to use the wrapper serialization features, you also need to pass in or set the application context.
