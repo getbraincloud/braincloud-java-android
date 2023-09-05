@@ -24,7 +24,7 @@ https://central.sonatype.com/artifact/com.bitheads/braincloud-java-android/
 Add the following to a build.gradle, changing the version number to the desired release:
 
 ```
-implementation 'com.bitheads:braincloud-java-android:4.x.x'
+implementation 'com.bitheads:braincloud-java-android:x.x.x'
 ```
 
 Note that for Android projects ```BrainCloudWrapperAndroid``` should be used instead of ```BrainCloudWrapper```
