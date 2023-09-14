@@ -6,11 +6,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 
+import com.bitheads.braincloud.services.Helpers;
 import com.bitheads.braincloud.services.TestFixtureNoAuth;
 import com.bitheads.braincloud.services.TestResult;
 
 import junit.framework.Assert;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -101,6 +103,57 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
         tr.Run();
 
         Logout();
+    }
+
+    @Test
+    public void testAuthenticateHandoff(){
+        String handoffId;
+        String handoffToken;
+        TestResult tr = new TestResult(_wrapper);
+        String anonId = _client.getAuthenticationService().generateAnonymousId();
+
+        _client.getAuthenticationService().authenticateAnonymous(anonId, true, tr);
+        tr.Run();
+
+        _client.getScriptService().runScript("createHandoffId",
+                Helpers.createJsonPair("", ""),
+                tr);
+        tr.Run();
+
+        try {
+            handoffId = tr.m_response.getJSONObject("data").getJSONObject("response").getString("handoffId");
+            handoffToken = tr.m_response.getJSONObject("data").getJSONObject("response").getString("securityToken");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        _wrapper.authenticateHandoff(handoffId, handoffToken, tr);
+        tr.Run();
+    }
+
+    @Test
+    public void testAuthenticateSettopHandoff(){
+        String handoffCode;
+        TestResult tr = new TestResult(_wrapper);
+        String anonId = _client.getAuthenticationService().generateAnonymousId();
+
+        _client.getAuthenticationService().authenticateAnonymous(anonId, true, tr);
+        tr.Run();
+
+        _client.getScriptService().runScript(
+                "CreateSettopHandoffCode",
+                Helpers.createJsonPair("", ""),
+                tr);
+        tr.Run();
+
+        try {
+            handoffCode = tr.m_response.getJSONObject("data").getJSONObject("response").getString("handoffCode");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        _wrapper.authenticateSettopHandoff(handoffCode, tr);
+        tr.Run();
     }
 
     @Test

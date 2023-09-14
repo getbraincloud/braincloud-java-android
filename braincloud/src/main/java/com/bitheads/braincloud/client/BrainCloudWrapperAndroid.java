@@ -514,6 +514,8 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param callback   The callback handler
      */
     public void authenticateHandoff(String handoffId, String securityToken, IServerCallback callback) {
+        _authenticateCallback = callback;
+
         getClient().getAuthenticationService().authenticateHandoff(handoffId, securityToken, this);
     }
 
@@ -524,6 +526,8 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param callback   The callback handler
      */
     public void authenticateSettopHandoff(String handoffCode, IServerCallback callback) {
+        _authenticateCallback = callback;
+
         getClient().getAuthenticationService().authenticateSettopHandoff(handoffCode, this);
     }
 
