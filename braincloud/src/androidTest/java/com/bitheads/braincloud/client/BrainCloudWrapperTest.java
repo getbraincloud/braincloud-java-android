@@ -1,6 +1,7 @@
 package com.bitheads.braincloud.client;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -215,6 +216,34 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
         _wrapper.getTimeService().readServerTime(
                 tr3);
         tr3.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
+    }
+
+    public void testLogout(boolean forgetUser){
+        TestResult tr = new TestResult(_wrapper);
+
+        Log.d("brainCloudWrapper test", "Authenticating . . .");
+        _wrapper.authenticateUniversal(
+                getUser(Users.UserA).id,
+                getUser(Users.UserA).password,
+                true,
+                tr);
+        tr.Run();
+
+        Log.d("brainCloudWrapper test", "Logging out . . .");
+        _wrapper.logout(forgetUser, tr);
+        tr.Run();
+
+        Assert.assertEquals(forgetUser, _wrapper.getStoredProfileId().equals(""));
+    }
+
+    @Test
+    public void testLogoutRememberUser(){
+        testLogout(false);
+    }
+
+    @Test
+    public void testLogoutForgetUser(){
+        testLogout(true);
     }
 /*
     @Test
