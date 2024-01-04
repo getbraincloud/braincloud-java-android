@@ -23,11 +23,9 @@ import java.util.Map;
 
 
 @RunWith(AndroidJUnit4.class)
-public class BrainCloudWrapperTest extends TestFixtureNoAuth
-{
+public class BrainCloudWrapperTest extends TestFixtureNoAuth {
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         super.setUp();
 
         // this forces us to create a new anonymous account
@@ -39,8 +37,7 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     }
 
     @Test
-    public void testAuthenticateAnonymous()
-    {
+    public void testAuthenticateAnonymous() {
         _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
 
         TestResult tr = new TestResult(_wrapper);
@@ -67,19 +64,7 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     }
 
     @Test
-    public void testManualRedirect() throws Exception
-    {
-        _wrapper.initialize(m_redirectAppId, m_secret, m_appVersion, m_serverUrl);
-
-        TestResult tr = new TestResult(_wrapper);
-        _wrapper.authenticateAnonymous(tr);
-
-        tr.Run();
-    }
-
-    @Test
-    public void testAuthenticateEmailPassword()
-    {
+    public void testAuthenticateEmailPassword() {
         _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
 
         String email = getUser(Users.UserA).email;
@@ -93,13 +78,13 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     }
 
     @Test
-    public void testAuthenticateUniversal()
-    {
+    public void testAuthenticateUniversal(){
         _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
 
         TestResult tr = new TestResult(_wrapper);
         String uid = getUser(Users.UserA).id;
         uid += "_wrapper";
+
         _wrapper.authenticateUniversal(uid, getUser(Users.UserA).password, true, tr);
         tr.Run();
 
@@ -107,7 +92,7 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     }
 
     @Test
-    public void testAuthenticateHandoff(){
+    public void testAuthenticateHandoff() {
         String handoffId;
         String handoffToken;
         TestResult tr = new TestResult(_wrapper);
@@ -133,7 +118,7 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     }
 
     @Test
-    public void testAuthenticateSettopHandoff(){
+    public void testAuthenticateSettopHandoff() {
         String handoffCode;
         TestResult tr = new TestResult(_wrapper);
         String anonId = _client.getAuthenticationService().generateAnonymousId();
@@ -158,8 +143,17 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     }
 
     @Test
-    public void testReconnect()
-    {
+    public void testManualRedirect() throws Exception {
+        _wrapper.initialize(m_redirectAppId, m_secret, m_appVersion, m_serverUrl);
+
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.authenticateAnonymous(tr);
+
+        tr.Run();
+    }
+
+    @Test
+    public void testReconnect() {
         _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
 
         TestResult tr = new TestResult(_wrapper);
@@ -176,9 +170,9 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
 
         Logout();
     }
+
     @Test
-    public void testReInitWrapper() throws Exception
-    {
+    public void testReInitWrapper() throws Exception {
         //case 1 Multiple init on client
         Map<String, String> originalAppSecretMap = new HashMap<String, String>();
         originalAppSecretMap.put(m_appId, m_secret);
@@ -218,7 +212,7 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
         tr3.RunExpectFail(StatusCodes.FORBIDDEN, ReasonCodes.NO_SESSION);
     }
 
-    public void testLogout(boolean forgetUser){
+    public void testLogout(boolean forgetUser) {
         TestResult tr = new TestResult(_wrapper);
 
         Log.d("brainCloudWrapper test", "Authenticating . . .");
@@ -237,48 +231,100 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth
     }
 
     @Test
-    public void testLogoutRememberUser(){
+    public void testLogoutRememberUser() {
         testLogout(false);
     }
 
     @Test
-    public void testLogoutForgetUser(){
+    public void testLogoutForgetUser() {
         testLogout(true);
     }
-/*
+
     @Test
-    public void testVerifyAlwaysAllowProfileFalse()
-    {
-        BrainCloudWrapper bcw = BrainCloudWrapper.getInstance();
-        bcw.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
-        bcw.setAlwaysAllowProfileSwitch(false);
-
-        // this forces us to create a new anonymous account
-        bcw.setStoredAnonymousId("");
-        bcw.setStoredProfileId("");
-
+    public void testResetEmailPassword(){
         TestResult tr = new TestResult(_wrapper);
-        bcw.authenticateAnonymous(tr);
+
+        String email = "braincloudunittest@gmail.com";
+
+        _wrapper.authenticateEmailPassword(email, email, true, tr);
         tr.Run();
 
-        String anonId = bcw.getStoredAnonymousId();
-        String profileId = bcw.getStoredProfileId();
-        String uid = "aaa";//getUser(Users.UserA).id;
-        uid += "_wrapperVerifyAlwaysAllowProfileFalse";
+        _wrapper.resetEmailPassword(email, tr);
+        tr.Run();
+    }
 
-        BrainCloudWrapper.getBC().getIdentityService().attachUniversalIdentity(uid, uid, tr);
+    @Test
+    public void testResetEmailPasswordAdvanced() {
+        TestResult tr = new TestResult(_wrapper);
+
+        String email = "braincloudunittest@gmail.com";
+        String serviceParams = "{\"fromAddress\": \"fromAddress\",\"fromName\": \"fromName\",\"replyToAddress\": \"replyToAddress\",\"replyToName\": \"replyToName\", \"templateId\": \"8f14c77d-61f4-4966-ab6d-0bee8b13d090\",\"subject\": \"subject\",\"body\": \"Body goes here\", \"substitutions\": { \":name\": \"John Doe\",\":resetLink\": \"www.dummuyLink.io\"}, \"categories\": [\"category1\",\"category2\" ]}";
+
+        _wrapper.authenticateEmailPassword(email, email, true, tr);
         tr.Run();
 
-        Logout();
-        BrainCloudWrapper.getBC().getAuthenticationService().clearSavedProfileId();
+        _wrapper.resetEmailPasswordAdvanced(email, serviceParams, tr);
+        tr.RunExpectFail(StatusCodes.BAD_REQUEST, ReasonCodes.INVALID_FROM_ADDRESS);
+    }
 
-        bcw.authenticateUniversal(uid, uid, true, tr);
+    @Test
+    public void testSmartSwitchAnonToUniversal(){
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.authenticateAnonymous(tr);
         tr.Run();
 
-        Assert.assertEquals(anonId, bcw.getStoredAnonymousId());
-        Assert.assertEquals(profileId, bcw.getStoredProfileId());
+        _wrapper.smartSwitchAuthenticateUniversal("testAuth", "testPass", true, tr);
+        tr.Run();
+    }
 
-        bcw.setAlwaysAllowProfileSwitch(true);
-        Logout();
-    }*/
+    @Test
+    public void testSmartSwitchUniversalToEmail(){
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.authenticateUniversal(getUser(Users.UserA).id, getUser(Users.UserA).password, true, tr);
+        tr.Run();
+
+        _wrapper.smartSwitchAuthenticateEmail("testAuth", "testPass", true, tr);
+        tr.Run();
+    }
+
+//    @Test
+//    public void testVerifyAlwaysAllowProfileFalse(){
+//        // TODO
+//        //BrainCloudWrapperAndroid bcw = BrainCloudWrapperAndroid.getInstance();
+//        _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
+//        _wrapper.setAlwaysAllowProfileSwitch(false);
+//
+//        // this forces us to create a new anonymous account
+//        _wrapper.setStoredAnonymousId("");
+//        _wrapper.setStoredProfileId("");
+//
+//        TestResult tr = new TestResult(_wrapper);
+//        _wrapper.authenticateAnonymous(tr);
+//        tr.Run();
+//
+//        System.out.println("getUser");
+//        String anonId = _wrapper.getStoredAnonymousId();
+//        String profileId = _wrapper.getStoredProfileId();
+//        System.out.println("anonId: " + anonId + "\nprofileId: " + profileId);
+//        String uid = getUser(Users.UserA).id;
+//        uid += "_wrapperVerifyAlwaysAllowProfileFalse";
+//
+//        System.out.println("attachUniversalIdentity");
+//        _wrapper.getIdentityService().attachUniversalIdentity(uid, uid, tr);
+//        tr.Run();
+//
+//        Logout();
+//        _wrapper.getAuthenticationService().clearSavedProfileId();
+//
+//        _wrapper.authenticateUniversal(uid, uid, true, tr);
+//        tr.Run();
+//
+//        Assert.assertEquals(anonId, _wrapper.getStoredAnonymousId());
+//        Assert.assertEquals(profileId, _wrapper.getStoredProfileId());
+//
+//        _wrapper.setAlwaysAllowProfileSwitch(true);
+//        Logout();
+//    }
 }
