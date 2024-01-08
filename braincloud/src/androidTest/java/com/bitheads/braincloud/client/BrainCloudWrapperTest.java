@@ -215,7 +215,6 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth {
     public void testLogout(boolean forgetUser) {
         TestResult tr = new TestResult(_wrapper);
 
-        Log.d("brainCloudWrapper test", "Authenticating . . .");
         _wrapper.authenticateUniversal(
                 getUser(Users.UserA).id,
                 getUser(Users.UserA).password,
@@ -223,7 +222,6 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth {
                 tr);
         tr.Run();
 
-        Log.d("brainCloudWrapper test", "Logging out . . .");
         _wrapper.logout(forgetUser, tr);
         tr.Run();
 
@@ -284,6 +282,14 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth {
 
         _wrapper.authenticateUniversal(getUser(Users.UserA).id, getUser(Users.UserA).password, true, tr);
         tr.Run();
+
+        _wrapper.smartSwitchAuthenticateEmail("testAuth", "testPass", true, tr);
+        tr.Run();
+    }
+
+    @Test
+    public void testSmartSwitchNoAuthToEmail(){
+        TestResult tr = new TestResult(_wrapper);
 
         _wrapper.smartSwitchAuthenticateEmail("testAuth", "testPass", true, tr);
         tr.Run();
