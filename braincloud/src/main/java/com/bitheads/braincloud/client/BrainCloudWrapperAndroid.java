@@ -3,19 +3,6 @@ package com.bitheads.braincloud.client;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchEmail;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchExternal;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchFacebook;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchOculus;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchGoogle;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchGoogleOpenId;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchApple;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchSteam;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchTwitter;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchUniversal;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchUltra;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchAdvanced;
-
 import com.bitheads.braincloud.services.AppStoreService;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
@@ -62,7 +49,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Map;
 import android.os.Build;
-import android.util.Log;
 
 /**
  * The BrainCloudWrapper provides some convenience functionality to developers when they are
