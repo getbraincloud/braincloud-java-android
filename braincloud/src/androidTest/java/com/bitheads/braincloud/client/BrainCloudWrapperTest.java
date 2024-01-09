@@ -295,42 +295,39 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth {
         tr.Run();
     }
 
-//    @Test
-//    public void testVerifyAlwaysAllowProfileFalse(){
-//        // TODO
-//        //BrainCloudWrapperAndroid bcw = BrainCloudWrapperAndroid.getInstance();
-//        _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
-//        _wrapper.setAlwaysAllowProfileSwitch(false);
-//
-//        // this forces us to create a new anonymous account
-//        _wrapper.setStoredAnonymousId("");
-//        _wrapper.setStoredProfileId("");
-//
-//        TestResult tr = new TestResult(_wrapper);
-//        _wrapper.authenticateAnonymous(tr);
-//        tr.Run();
-//
-//        System.out.println("getUser");
-//        String anonId = _wrapper.getStoredAnonymousId();
-//        String profileId = _wrapper.getStoredProfileId();
-//        System.out.println("anonId: " + anonId + "\nprofileId: " + profileId);
-//        String uid = getUser(Users.UserA).id;
-//        uid += "_wrapperVerifyAlwaysAllowProfileFalse";
-//
-//        System.out.println("attachUniversalIdentity");
-//        _wrapper.getIdentityService().attachUniversalIdentity(uid, uid, tr);
-//        tr.Run();
-//
-//        Logout();
-//        _wrapper.getAuthenticationService().clearSavedProfileId();
-//
-//        _wrapper.authenticateUniversal(uid, uid, true, tr);
-//        tr.Run();
-//
-//        Assert.assertEquals(anonId, _wrapper.getStoredAnonymousId());
-//        Assert.assertEquals(profileId, _wrapper.getStoredProfileId());
-//
-//        _wrapper.setAlwaysAllowProfileSwitch(true);
-//        Logout();
-//    }
+    @Test
+    public void testVerifyAlwaysAllowProfileFalse(){
+        String uid = getUser(Users.UserA).id;
+        uid += "_wrapperVerifyAlwaysAllowProfileFalse";
+
+        _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
+        _wrapper.setAlwaysAllowProfileSwitch(false);
+
+        // this forces us to create a new anonymous account
+        _wrapper.setStoredAnonymousId("");
+        _wrapper.setStoredProfileId("");
+
+        TestResult tr = new TestResult(_wrapper);
+        _wrapper.authenticateAnonymous(tr);
+        tr.Run();
+
+        String anonId = _wrapper.getStoredAnonymousId();
+        String profileId = _wrapper.getStoredProfileId();
+
+        _wrapper.getIdentityService().attachUniversalIdentity(uid, uid, tr);
+        tr.Run();
+
+        Logout();
+
+        _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
+
+        _wrapper.authenticateUniversal(uid, uid, true, tr);
+        tr.Run();
+
+        Assert.assertEquals(anonId, _wrapper.getStoredAnonymousId());
+        Assert.assertEquals(profileId, _wrapper.getStoredProfileId());
+
+        _wrapper.setAlwaysAllowProfileSwitch(true);
+        Logout();
+    }
 }
