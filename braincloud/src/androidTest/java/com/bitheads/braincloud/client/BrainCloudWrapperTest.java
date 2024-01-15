@@ -68,7 +68,6 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth {
         _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
 
         String email = getUser(Users.UserA).email;
-        email += "_wrapper";
 
         TestResult tr = new TestResult(_wrapper);
         _wrapper.authenticateEmailPassword(email, getUser(Users.UserA).password, true, tr);
