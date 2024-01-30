@@ -26,8 +26,9 @@ public class TestUser
         _wrapper = wrapper;
         id = idPrefix + suffix;
         password = id;
-        email = id + "@bctestuser.com";
+        email = id + "@test.getbraincloud.com";
         Authenticate(authWithEmail);
+        System.out.println("authWithEmail post");
     }
 
 	 @SuppressWarnings("deprecation")
@@ -35,7 +36,7 @@ public class TestUser
     {
         TestResult tr = new TestResult(_wrapper);
         if(!withEmail) {
-            _wrapper.getClient().getAuthenticationService().authenticateUniversal(
+            _wrapper.authenticateUniversal(
                     id,
                     password,
                     true,
@@ -50,7 +51,7 @@ public class TestUser
                     tr);
             tr.Run();
         }
-
+        
         profileId = _wrapper.getClient().getAuthenticationService().getProfileId();
 
         try
