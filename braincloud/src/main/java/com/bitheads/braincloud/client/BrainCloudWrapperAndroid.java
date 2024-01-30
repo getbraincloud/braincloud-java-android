@@ -3,19 +3,6 @@ package com.bitheads.braincloud.client;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchEmail;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchExternal;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchFacebook;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchOculus;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchGoogle;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchGoogleOpenId;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchApple;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchSteam;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchTwitter;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchUniversal;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchUltra;
-import com.bitheads.braincloud.client.SmartSwitchCallback.SmartSwitchAdvanced;
-
 import com.bitheads.braincloud.services.AppStoreService;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
@@ -817,103 +804,266 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
 
     public void smartSwitchAuthenticateEmail(String email, String password, boolean forceCreate, IServerCallback callback)
     {
-        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
-        SmartSwitchEmail emailSwitch = smartSwitch.new SmartSwitchEmail(email, password, forceCreate, this, callback);
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
 
-        getIdentitiesCallback(emailSwitch);
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateEmailPassword(email, password, forceCreate, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
     }
 
     public void smartSwitchAuthenticateExternal(String userId, String token, String externalAuthName, boolean forceCreate, IServerCallback callback)
     {
-        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
-        SmartSwitchExternal externalSwitch = smartSwitch.new SmartSwitchExternal(userId, token, externalAuthName, forceCreate, this, callback);
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
 
-        getIdentitiesCallback(externalSwitch);
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateExternal(userId, token, externalAuthName, forceCreate, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
     }
 
     public void smartSwitchAuthenticateFacebook(String fbUserId, String fbAuthToken, boolean forceCreate, IServerCallback callback)
     {
-        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
-        SmartSwitchFacebook facebookSwitch = smartSwitch.new SmartSwitchFacebook(fbUserId, fbAuthToken, forceCreate, this, callback);
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
 
-        getIdentitiesCallback(facebookSwitch);
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateFacebook(fbUserId, fbAuthToken, forceCreate, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
     }
 
     public void smartSwitchAuthenticateOculus(String oculusUserId, String oculusNonce, boolean forceCreate, IServerCallback callback)
     {
-        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
-        SmartSwitchOculus oculusSwitch = smartSwitch.new SmartSwitchOculus(oculusUserId, oculusNonce, forceCreate, this, callback);
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
 
-        getIdentitiesCallback(oculusSwitch);
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateOculus(oculusUserId, oculusNonce, forceCreate, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
     }
 
     public void smartSwitchAuthenticateGoogle(String googleUserId, String serverAuthCode, boolean forceCreate, IServerCallback callback)
     {
-        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
-        SmartSwitchGoogle googleSwitch = smartSwitch.new SmartSwitchGoogle(googleUserId, serverAuthCode, forceCreate, this, callback);
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
 
-        getIdentitiesCallback(googleSwitch);
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateGoogle(googleUserId, serverAuthCode, forceCreate, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
     }
 
-    public void smartSwitchAuthenticateGoogleOpenId(String googleUserAccountEmail, String IdToken, boolean forceCreate, IServerCallback callback)
+    public void smartSwitchAuthenticateGoogleOpenId(String googleUserAccountEmail, String idToken, boolean forceCreate, IServerCallback callback)
     {
-        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
-        SmartSwitchGoogleOpenId googleSwitch = smartSwitch.new SmartSwitchGoogleOpenId(googleUserAccountEmail, IdToken, forceCreate, this, callback);
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
 
-        getIdentitiesCallback(googleSwitch);
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateGoogleOpenId(googleUserAccountEmail, idToken, forceCreate, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
     }
 
     public void smartSwitchAuthenticateApple(String appleUserId, String token, boolean forceCreate, IServerCallback callback)
     {
-        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
-        SmartSwitchApple appleSwitch = smartSwitch.new SmartSwitchApple(appleUserId, token, forceCreate, this, callback);
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
 
-        getIdentitiesCallback(appleSwitch);
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateApple(appleUserId, token, forceCreate, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
     }
 
     public void smartSwitchAuthenticateSteam(String steamUserId, String sessionTicket, boolean forceCreate, IServerCallback callback)
     {
-        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
-        SmartSwitchSteam steamSwitch = smartSwitch.new SmartSwitchSteam(steamUserId, sessionTicket, forceCreate, this, callback);
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
 
-        getIdentitiesCallback(steamSwitch);
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateSteam(steamUserId, sessionTicket, forceCreate, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
     }
 
     public void smartSwitchAuthenticateTwitter(String userId, String token, String secret, boolean forceCreate, IServerCallback callback)
     {
-        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
-        SmartSwitchTwitter twitterSwitch = smartSwitch.new SmartSwitchTwitter(userId, token, secret, forceCreate, this, callback);
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
 
-        getIdentitiesCallback(twitterSwitch);
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateTwitter(userId, token, secret, forceCreate, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
     }
 
     public void smartSwitchAuthenticateUniversal(String userId, String password, boolean forceCreate, IServerCallback callback)
     {
-        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
-        SmartSwitchUniversal universalSwitch = smartSwitch.new SmartSwitchUniversal(userId, password, forceCreate, this, callback);
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
 
-        getIdentitiesCallback(universalSwitch);
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateUniversal(userId, password, forceCreate, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
     }
 
     public void smartSwitchAuthenticateUltra(String ultraUserId, String ultraIdToken, boolean forceCreate, IServerCallback callback)
     {
-        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
-        SmartSwitchUltra ultraSwitch = smartSwitch.new SmartSwitchUltra(ultraUserId, ultraIdToken, forceCreate, this, callback);
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
 
-        getIdentitiesCallback(ultraSwitch);
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateUltra(ultraUserId, ultraIdToken, forceCreate, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
     }
 
     public void smartSwitchAuthenticateAdvanced(AuthenticationType authenticationType, AuthenticationIds ids, boolean forceCreate, String extraJson, IServerCallback callback)
     {
-        SmartSwitchCallback smartSwitch = new SmartSwitchCallback(this, callback);
-        SmartSwitchAdvanced advancedSwitch = smartSwitch.new SmartSwitchAdvanced(authenticationType, ids, forceCreate, extraJson, this, callback);
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
 
-        getIdentitiesCallback(advancedSwitch);
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateAdvanced(authenticationType, ids, forceCreate, extraJson, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
+    }
+
+    public void logout(boolean forgetUser, IServerCallback callback){
+        if(forgetUser){
+            resetStoredProfileId();
+        }
+
+        getClient().getPlayerStateService().logout(callback);
     }
 
     private void getIdentitiesCallback(IServerCallback success)
     {
-
         IdentityCallback identityCallback = new IdentityCallback(this, success);
 
         if (getClient().isAuthenticated())
