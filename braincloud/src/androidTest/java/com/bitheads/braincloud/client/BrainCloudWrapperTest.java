@@ -1,5 +1,8 @@
 package com.bitheads.braincloud.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -152,22 +155,86 @@ public class BrainCloudWrapperTest extends TestFixtureNoAuth {
     }
 
     @Test
-    public void testReconnect() {
+    public void canReconnectTrue(){
+        TestResult tr = new TestResult(_wrapper);
+
         _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
 
+        // Authenticate
+        _wrapper.authenticateUniversal(getUser(Users.UserA).id, getUser(Users.UserA).password, true, tr);
+        tr.Run();
+
+        // Log out
+        _wrapper.logout(false, tr);
+        tr.Run();
+
+        // Check canReconnect()
+        assertEquals(true, _wrapper.canReconnect());
+    }
+
+    @Test
+    public void canReconnectFalse(){
         TestResult tr = new TestResult(_wrapper);
-        String uid = getUser(Users.UserA).id;
-        uid += "_wrapper";
-        _wrapper.authenticateUniversal(uid, getUser(Users.UserA).password, true, tr);
+
+        _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
+
+        // Authenticate
+        _wrapper.authenticateUniversal(getUser(Users.UserA).id, getUser(Users.UserA).password, true, tr);
         tr.Run();
 
-        _wrapper.getClient().getPlayerStateService().logout(tr);
+        // Log out
+        _wrapper.logout(true, tr);
         tr.Run();
 
-        _wrapper.reconnect(tr);
+        // Check canReconnect()
+        assertEquals(false, _wrapper.canReconnect());
+    }
+
+    @Test
+    public void reconnectExpectSuccess(){
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
+
+        // Authenticate
+        _wrapper.authenticateUniversal(getUser(Users.UserA).id, getUser(Users.UserA).password, true, tr);
         tr.Run();
 
-        Logout();
+        // Log out
+        _wrapper.logout(false, tr);
+        tr.Run();
+
+        // Check canReconnect()
+        if(_wrapper.canReconnect()){
+            _wrapper.reconnect(tr);
+            tr.Run();
+        }
+        else fail("canReconnect returned false but should have been true");
+    }
+
+    @Test
+    public void reconnectExpectFail(){
+        TestResult tr = new TestResult(_wrapper);
+
+        _wrapper.initialize(m_appId, m_secret, m_appVersion, m_serverUrl);
+
+        // Authenticate
+        _wrapper.authenticateUniversal(getUser(Users.UserA).id, getUser(Users.UserA).password, true, tr);
+        tr.Run();
+
+        // Log out
+        _wrapper.logout(true, tr);
+        tr.Run();
+
+        // Check canReconnect()
+        if (_wrapper.canReconnect()) {
+            fail("canReconnect returned true but should have been false");
+        }
+        else {
+            System.out.println("Attempting to reconnect to confirm that it shouldn't be possible. . .");
+            _wrapper.reconnect(tr);
+            tr.RunExpectFail(202, 40208);
+        }
     }
 
     @Test

@@ -66,7 +66,6 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
 
     private static BrainCloudWrapperAndroid _instance = null;
 
-
     private Context _context = null;
 
     private boolean _alwaysAllowProfileSwitch = true;
@@ -1074,6 +1073,14 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         {
             success.serverCallback(ServiceName.authenticationV2, ServiceOperation.AUTHENTICATE, null);
         }
+    }
+
+    /**
+     * Check if there are stored anonymous and profile IDs. If there are, reconnect authentication is possible.
+     * @return False if the anonymous and/or profile IDs are empty
+     */
+    public boolean canReconnect(){
+        return !getStoredAnonymousId().equals("") && !getStoredProfileId().equals("");
     }
 
     /**
