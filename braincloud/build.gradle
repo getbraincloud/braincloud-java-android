@@ -103,8 +103,8 @@ afterEvaluate{
                 url = ossrhUrl
 
                 credentials{
-                    username ossrhUser
-                    password ossrhPass
+                    username ossrhUsername
+                    password ossrhPassword
                 }
 
             }
