@@ -1252,20 +1252,6 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     }
 
     /**
-     * Enable compression in comms transactions
-     */
-    public void enableCompression() {
-        getClient().enableCompression();
-    }
-
-    /**
-     * Disable compression in comms transactions
-     */
-    public void disableCompression() {
-        getClient().disableCompression();
-    }
-
-    /**
      * The serverCallback() method returns server data back to the layer
      * interfacing with the BrainCloud library.
      *
