@@ -1,7 +1,17 @@
 plugins {
     id 'com.android.library'
-    id 'maven-publish'
+    id "com.vanniktech.maven.publish" version "0.34.0"
     id 'signing'
+}
+
+signing {
+    useGpgCmd()
+}
+
+mavenPublishing {
+    publishToMavenCentral()
+
+    signAllPublications()
 }
 
 android {
@@ -28,12 +38,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    publishing{
-        singleVariant('release'){
-            withSourcesJar()
-            withJavadocJar()
-        }
-    }
     sourceSets {
         main {
             assets {
@@ -53,66 +57,31 @@ dependencies {
     api 'com.bitheads:braincloud-java:5.8.0'
 }
 
-afterEvaluate{
-    publishing {
-        publications{
-            release(MavenPublication){
-                groupId = 'com.bitheads'
-                artifactId = 'braincloud-java-android'
-                version '5.8.0'
+mavenPublishing {
+    coordinates("com.bitheads", "braincloud-java-android", "5.8.0")
 
-                pom {
-                    name = 'brainCloud Java API (Android)'
-                    description = 'The Java-Android client library for brainCloud'
-                    url = 'https://github.com/getbraincloud/braincloud-java-android'
-
-                    licenses {
-                        license {
-                            name = 'The Apache License, Version 2.0'
-                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        }
-                    }
-
-                    scm {
-                        connection = 'scm:git:git://github.com/getbraincloud/braincloud-java-android'
-                        developerConnection = 'scm:git:ssh://github.com/getbraincloud/braincloud-java-android'
-                        url = 'https://github.com/getbraincloud/braincloud-java-android'
-                    }
-
-                    developers {
-                        developer {
-                            id = 'bc-client-team'
-                            name = 'brainCloud Client Team'
-                            email = 'bc-client-team@bitheads.com'
-                        }
-                    }
-                }
-
-                from components.release
+    pom {
+        name = 'brainCloud Java API (Android)'
+        description = 'The Java-Android client library for brainCloud'
+        url = 'https://github.com/getbraincloud/braincloud-java-android'
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         }
-        repositories {
-            maven {
-                /* publish to local build dir */
-                /*
-                name = 'myrepo'
-                url = "${project.buildDir}/repo"
-                */
-
-                /* publish to remote repo */
-                url = ossrhUrl
-
-                credentials{
-                    username ossrhUsername
-                    password ossrhPassword
-                }
-
+        developers {
+            developer {
+                id = 'bc-client-team'
+                name = 'brainCloud Client Team'
+                email = 'bc-client-team@bitheads.com'
             }
         }
-    }
-
-    signing{
-        sign publishing.publications.release
+        scm {
+            connection = 'scm:git:git://github.com/getbraincloud/braincloud-java-android'
+            developerConnection = 'scm:git:ssh://github.com/getbraincloud/braincloud-java-android'
+            url = 'https://github.com/getbraincloud/braincloud-java-android'
+        }
     }
 }
 
