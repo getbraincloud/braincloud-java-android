@@ -107,36 +107,6 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     }
 
     /**
-     * Method returns a singleton instance of the BrainCloudWrapper.
-     *
-     * @return A singleton instance of the BrainCloudWrapper.
-     *
-     * @deprecated Use of the *singleton* has been deprecated. We recommend that you create your own *variable* to hold an instance of the brainCloudWrapper. Explanation here: http://getbraincloud.com/apidocs/release-3-6-5/
-     */
-    public static BrainCloudWrapperAndroid getInstance() {
-
-        if (BrainCloudClient.EnableSingletonMode == false) {
-            throw new AssertionError(BrainCloudClient.SingletonUseErrorMessage);
-        }
-
-        if (_instance == null) {
-            _instance = new BrainCloudWrapperAndroid();
-            BrainCloudClient.setInstance(_instance.getClient());
-        }
-
-        return _instance;
-    }
-
-    /**
-     * Returns a singleton instance of the BrainCloudClient.
-     *
-     * @return A singleton instance of the BrainCloudClient.
-     */
-    public static BrainCloudClient getBC() {
-        return getInstance().getClient();
-    }
-
-    /**
      * Sets the context required for saving anonymous and profile ids to the
      * private SharedPreferences file.
      *
