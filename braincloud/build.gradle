@@ -54,11 +54,11 @@ dependencies {
     implementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    api 'com.bitheads:braincloud-java:5.8.0'
+    api 'com.bitheads:braincloud-java:5.9.0'
 }
 
 mavenPublishing {
-    coordinates("com.bitheads", "braincloud-java-android", "5.8.0")
+    coordinates("com.bitheads", "braincloud-java-android", "5.9.0")
 
     pom {
         name = 'brainCloud Java API (Android)'
