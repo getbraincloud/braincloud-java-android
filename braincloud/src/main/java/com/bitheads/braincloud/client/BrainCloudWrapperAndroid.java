@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import com.bitheads.braincloud.services.AppStoreService;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
+import com.bitheads.braincloud.services.BlockchainService;
+import com.bitheads.braincloud.services.CampaignService;
 import com.bitheads.braincloud.services.ChatService;
 import com.bitheads.braincloud.services.DataStreamService;
 import com.bitheads.braincloud.services.EntityService;
@@ -1384,6 +1386,10 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         return _client.getMessagingService();
     }
 
+    public BlockchainService getBlockchainService() {
+        return _client.getBlockchainService();
+    }
+
     public MatchMakingService getMatchMakingService() {
         return _client.getMatchMakingService();
     }
@@ -1474,5 +1480,9 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
 
     public UserItemsService getUserItemsService() {
         return _client.getUserItemsService();
+    }
+
+    public CampaignService getCampaignService() {
+        return _client.getCampaignService();
     }
 }
