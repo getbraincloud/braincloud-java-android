@@ -1317,9 +1317,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         return _client.getAsyncMatchService();
     }
 
-    public AuthenticationService getAuthenticationService() {
-        return _client.getAuthenticationService();
-    }
+    public AuthenticationService getAuthenticationService() { return _client.getAuthenticationService(); }
 
     public ChatService getChatService() {
         return _client.getChatService();
@@ -1357,15 +1355,12 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         return _client.getGlobalEntityService();
     }
 
-    public GlobalStatisticsService getGlobalStatisticsService() {
-        return _client.getGlobalStatisticsService();
-    }
+    public GlobalStatisticsService getGlobalStatisticsService() { return _client.getGlobalStatisticsService(); }
 
     public GroupService getGroupService() {
         return _client.getGroupService();
     }
 
-    @Override
     public GroupFileService getGroupFileService() {
         return _client.getGroupFileService();
     }
@@ -1386,9 +1381,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         return _client.getMessagingService();
     }
 
-    public BlockchainService getBlockchainService() {
-        return _client.getBlockchainService();
-    }
+    public BlockchainService getBlockchainService() { return _client.getBlockchainService(); }
 
     public MatchMakingService getMatchMakingService() {
         return _client.getMatchMakingService();
@@ -1398,41 +1391,27 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         return _client.getOneWayMatchService();
     }
 
-    public PlaybackStreamService getPlaybackStreamService() {
-        return _client.getPlaybackStreamService();
-    }
+    public PlaybackStreamService getPlaybackStreamService() { return _client.getPlaybackStreamService(); }
 
-    public PlayerStateService getPlayerStateService() {
-        return _client.getPlayerStateService();
-    }
+    public PlayerStateService getPlayerStateService() { return _client.getPlayerStateService(); }
 
-    public PlayerStatisticsService getPlayerStatisticsService() {
-        return _client.getPlayerStatisticsService();
-    }
+    public PlayerStatisticsService getPlayerStatisticsService() { return _client.getPlayerStatisticsService(); }
 
-    public PlayerStatisticsEventService getPlayerStatisticsEventService() {
-        return _client.getPlayerStatisticsEventService();
-    }
+    public PlayerStatisticsEventService getPlayerStatisticsEventService() { return _client.getPlayerStatisticsEventService(); }
 
     public PresenceService getPresenceService() {
         return _client.getPresenceService();
     }
 
-    public VirtualCurrencyService getVirtualCurrencyService() {
-        return _client.getVirtualCurrencyService();
-    }
+    public VirtualCurrencyService getVirtualCurrencyService() { return _client.getVirtualCurrencyService(); }
 
     public ProfanityService getProfanityService() {
         return _client.getProfanityService();
     }
 
-    public PushNotificationService getPushNotificationService() {
-        return _client.getPushNotificationService();
-    }
+    public PushNotificationService getPushNotificationService() { return _client.getPushNotificationService(); }
 
-    public RedemptionCodeService getRedemptionCodeService() {
-        return _client.getRedemptionCodeService();
-    }
+    public RedemptionCodeService getRedemptionCodeService() {  return _client.getRedemptionCodeService(); }
 
     public RelayService getRelayService() {
         return _client.getRelayService();
@@ -1450,13 +1429,9 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         return _client.getScriptService();
     }
 
-    public SocialLeaderboardService getSocialLeaderboardService() {
-        return _client.getSocialLeaderboardService();
-    }
+    public SocialLeaderboardService getSocialLeaderboardService() { return _client.getSocialLeaderboardService(); }
 
-    public SocialLeaderboardService getLeaderboardService() {
-        return _client.getSocialLeaderboardService();
-    }
+    public SocialLeaderboardService getLeaderboardService() { return _client.getSocialLeaderboardService(); }
 
     public TimeService getTimeService() {
         return _client.getTimeService();
@@ -1482,7 +1457,5 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         return _client.getUserItemsService();
     }
 
-    public CampaignService getCampaignService() {
-        return _client.getCampaignService();
-    }
+    public CampaignService getCampaignService() {  return _client.getCampaignService(); }
 }
