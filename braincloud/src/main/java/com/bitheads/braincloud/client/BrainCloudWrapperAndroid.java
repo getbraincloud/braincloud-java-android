@@ -1,3 +1,5 @@
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
+
 package com.bitheads.braincloud.client;
 
 import android.content.Context;
@@ -65,8 +67,6 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     private static final String AUTHENTICATION_ANONYMOUS = "anonymous";
     private static final String _SHARED_PREFERENCES = "bcprefs";
     private static final String _DEFAULT_URL = "https://api.braincloudservers.com/dispatcherv2";
-
-    private static BrainCloudWrapperAndroid _instance = null;
 
     private Context _context = null;
 
@@ -386,7 +386,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *
      * @return The stored anonymous id
      */
-    String getStoredAnonymousId() {
+    public String getStoredAnonymousId() {
         SharedPreferences sharedPref = _context.getSharedPreferences(_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         return sharedPref.getString("anonymousId", "");
     }
@@ -1066,6 +1066,13 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         initializeIdentity(true);
 
         getClient().getAuthenticationService().authenticateAnonymous(false, this);
+    }
+
+    @Override
+    public void enableAutoReconnect(boolean autoReconnectEnabled) {
+        initializeIdentity(true);
+
+        getClient().getRestClient().setAutoReconnectEnabled(autoReconnectEnabled);
     }
 
     /**
