@@ -1,3 +1,5 @@
+// Copyright 2026 bitHeads, Inc. All Rights Reserved.
+
 package com.bitheads.braincloud.client;
 
 import android.content.Context;
@@ -6,6 +8,8 @@ import android.content.SharedPreferences;
 import com.bitheads.braincloud.services.AppStoreService;
 import com.bitheads.braincloud.services.AsyncMatchService;
 import com.bitheads.braincloud.services.AuthenticationService;
+import com.bitheads.braincloud.services.BlockchainService;
+import com.bitheads.braincloud.services.CampaignService;
 import com.bitheads.braincloud.services.ChatService;
 import com.bitheads.braincloud.services.DataStreamService;
 import com.bitheads.braincloud.services.EntityService;
@@ -64,8 +68,6 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     private static final String _SHARED_PREFERENCES = "bcprefs";
     private static final String _DEFAULT_URL = "https://api.braincloudservers.com/dispatcherv2";
 
-    private static BrainCloudWrapperAndroid _instance = null;
-
     private Context _context = null;
 
     private boolean _alwaysAllowProfileSwitch = true;
@@ -75,9 +77,12 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     private String _wrapperName = "";
 
     //get the release platform
+    @Override
     public Platform getReleasePlatform() {
         return _client.getReleasePlatform();
     }
+
+    @Override
     public void setReleasePlatform(Platform releasePlatform) {
         getClient().setReleasePlatform(releasePlatform);
     }
@@ -88,6 +93,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *
      * @return A singleton instance of the BrainCloudClient.
      */
+    @Override
     public BrainCloudClient getClient() {
         return _client;
     }
@@ -214,6 +220,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param appVersion The app version
      * @param serverUrl  The url to the brainCloud server
      */
+    @Override
     public void initialize(String appId, String secretKey, String appVersion, String serverUrl) {
 
         m_initializeParams.appId = appId;
@@ -241,6 +248,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param secretKey  The secret key for your app
      * @param appVersion The app version
      */
+    @Override
     public void initialize(String appId, String secretKey, String appVersion) {
 
         m_initializeParams.appId = appId;
@@ -350,6 +358,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *
      * @return The stored profile id
      */
+    @Override
     public String getStoredProfileId() {
         String saveName = getSaveName();
 
@@ -362,6 +371,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *
      * @param profileId The profile id to set
      */
+    @Override
     public void setStoredProfileId(String profileId) {
         String saveName = getSaveName();
 
@@ -375,6 +385,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     /**
      * Resets the profile id to empty string
      */
+    @Override
     public void resetStoredProfileId() {
         setStoredProfileId("");
     }
@@ -384,7 +395,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *
      * @return The stored anonymous id
      */
-    String getStoredAnonymousId() {
+    public String getStoredAnonymousId() {
         SharedPreferences sharedPref = _context.getSharedPreferences(_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         return sharedPref.getString("anonymousId", "");
     }
@@ -394,6 +405,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *
      * @param anonymousId The anonymous id to set
      */
+    @Override
     public void setStoredAnonymousId(String anonymousId) {
         SharedPreferences sharedPref = _context.getSharedPreferences(_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -404,6 +416,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     /**
      * Resets the anonymous id to empty string
      */
+    @Override
     public void resetStoredAnonymousId() {
         setStoredAnonymousId("");
     }
@@ -417,6 +430,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param alwaysAllow Controls whether the profile id is passed in with
      *                    non-anonymous authentications.
      */
+    @Override
     public void setAlwaysAllowProfileSwitch(boolean alwaysAllow) {
         _alwaysAllowProfileSwitch = alwaysAllow;
     }
@@ -426,6 +440,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *
      * @return Whether to always allow profile switches
      */
+    @Override
     public boolean getAlwaysAllowProfileSwitch() {
         return _alwaysAllowProfileSwitch;
     }
@@ -454,6 +469,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *
      * @param callback The callback handler
      */
+    @Override
     public void authenticateAnonymous(IServerCallback callback) {
         _authenticateCallback = callback;
 
@@ -469,6 +485,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param securityToken The authentication token
      * @param callback   The callback handler
      */
+    @Override
     public void authenticateHandoff(String handoffId, String securityToken, IServerCallback callback) {
         _authenticateCallback = callback;
 
@@ -481,6 +498,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param handoffCode generate in cloud code
      * @param callback   The callback handler
      */
+    @Override
     public void authenticateSettopHandoff(String handoffCode, IServerCallback callback) {
         _authenticateCallback = callback;
 
@@ -503,6 +521,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *                    does not exist?
      * @param callback    The callback handler
      */
+    @Override
     public void authenticateEmailPassword(String email,
                                           String password,
                                           boolean forceCreate,
@@ -527,6 +546,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param forceCreate      Should a new profile be created for this user if the account
      *                         does not exist?
      */
+    @Override
     public void authenticateExternal(String userId,
                                      String token,
                                      String externalAuthName,
@@ -549,6 +569,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *                    does not exist?
      * @param callback    The callback handler
      */
+    @Override
     public void authenticateFacebook(String fbUserId,
                                      String fbAuthToken,
                                      boolean forceCreate,
@@ -570,6 +591,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *                    does not exist?
      * @param callback    The callback handler
      */
+    @Override
     public void authenticateFacebookLimited(String fbLimitedUserId,
                                             String fbAuthToken,
                                             boolean forceCreate,
@@ -591,6 +613,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *                    does not exist?
      * @param callback    The callback handler
      */
+    @Override
     public void authenticateOculus(String oculusUserId,
                                    String oculusNonce,
                                    boolean forceCreate,
@@ -611,6 +634,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *                        does not exist?
      * @param callback        The callback handler
      */
+    @Override
     public void authenticateApple(String appleUserId, String identityToken, boolean forceCreate, IServerCallback callback) {
         _authenticateCallback = callback;
 
@@ -629,6 +653,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *                        does not exist?
      * @param callback        The callback handler
      */
+    @Override
     public void authenticateGoogle(String googleUserId,
                                    String serverAuthCode,
                                    boolean forceCreate,
@@ -649,6 +674,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *                        does not exist?
      * @param callback        The callback handler
      */
+    @Override
     public void authenticateGoogleOpenId(String googleUserAccountEmail,
                                          String IdToken,
                                          boolean forceCreate,
@@ -671,6 +697,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *                           does not exist?
      * @param callback           The callback handler
      */
+    @Override
     public void authenticateSteam(String steamUserId,
                                   String steamSessionTicket,
                                   boolean forceCreate,
@@ -691,6 +718,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *                           does not exist?
      * @param callback           The callback handler
      */
+    @Override
     public void authenticateUltra(String ultraUsername,
                                   String ultraIdToken,
                                   boolean forceCreate,
@@ -714,6 +742,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param forceCreate Should a new profile be created for this user if the account does not exist?
      * @param callback    The callback handler
      */
+    @Override
     public void authenticateTwitter(String userId,
                                     String token,
                                     String secret,
@@ -739,6 +768,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *                     does not exist?
      * @param callback     The callback handler
      */
+    @Override
     public void authenticateUniversal(String userId,
                                       String userPassword,
                                       boolean forceCreate,
@@ -763,6 +793,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param extraJson Additional to piggyback along with the call, to be picked up by pre- or post- hooks. Leave empty string for no extraJson.
      * @param callback The method to be invoked when the server response is received
      */
+    @Override
     public void authenticateAdvanced(AuthenticationType authenticationType, AuthenticationIds ids, boolean forceCreate, String extraJson, IServerCallback callback) {
         _authenticateCallback = callback;
 
@@ -771,6 +802,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         getClient().getAuthenticationService().authenticateAdvanced(authenticationType, ids, forceCreate, extraJson, this);
     }
 
+    @Override
     public void smartSwitchAuthenticateEmail(String email, String password, boolean forceCreate, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
@@ -792,6 +824,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         });
     }
 
+    @Override
     public void smartSwitchAuthenticateExternal(String userId, String token, String externalAuthName, boolean forceCreate, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
@@ -813,6 +846,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         });
     }
 
+    @Override
     public void smartSwitchAuthenticateFacebook(String fbUserId, String fbAuthToken, boolean forceCreate, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
@@ -834,6 +868,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         });
     }
 
+    @Override
     public void smartSwitchAuthenticateOculus(String oculusUserId, String oculusNonce, boolean forceCreate, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
@@ -855,6 +890,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         });
     }
 
+    @Override
     public void smartSwitchAuthenticateGoogle(String googleUserId, String serverAuthCode, boolean forceCreate, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
@@ -876,6 +912,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         });
     }
 
+    @Override
     public void smartSwitchAuthenticateGoogleOpenId(String googleUserAccountEmail, String idToken, boolean forceCreate, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
@@ -897,6 +934,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         });
     }
 
+    @Override
     public void smartSwitchAuthenticateApple(String appleUserId, String token, boolean forceCreate, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
@@ -918,6 +956,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         });
     }
 
+    @Override
     public void smartSwitchAuthenticateSteam(String steamUserId, String sessionTicket, boolean forceCreate, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
@@ -939,6 +978,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         });
     }
 
+    @Override
     public void smartSwitchAuthenticateTwitter(String userId, String token, String secret, boolean forceCreate, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
@@ -960,6 +1000,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         });
     }
 
+    @Override
     public void smartSwitchAuthenticateUniversal(String userId, String password, boolean forceCreate, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
@@ -981,6 +1022,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         });
     }
 
+    @Override
     public void smartSwitchAuthenticateUltra(String ultraUserId, String ultraIdToken, boolean forceCreate, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
@@ -1002,6 +1044,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         });
     }
 
+    @Override
     public void smartSwitchAuthenticateAdvanced(AuthenticationType authenticationType, AuthenticationIds ids, boolean forceCreate, String extraJson, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
@@ -1023,6 +1066,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         });
     }
 
+    @Override
     public void logout(boolean forgetUser, IServerCallback callback){
         if(forgetUser){
             resetStoredProfileId();
@@ -1049,6 +1093,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * Check if there are stored anonymous and profile IDs. If there are, reconnect authentication is possible.
      * @return False if the anonymous and/or profile IDs are empty
      */
+    @Override
     public boolean canReconnect(){
         return !getStoredAnonymousId().equals("") && !getStoredProfileId().equals("");
     }
@@ -1058,12 +1103,20 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *
      * @param callback The callback handler
      */
+    @Override
     public void reconnect(IServerCallback callback) {
         _authenticateCallback = callback;
 
         initializeIdentity(true);
 
         getClient().getAuthenticationService().authenticateAnonymous(false, this);
+    }
+
+    @Override
+    public void enableAutoReconnect(boolean autoReconnectEnabled) {
+        initializeIdentity(true);
+
+        getClient().getRestClient().setAutoReconnectEnabled(autoReconnectEnabled);
     }
 
     /**
@@ -1079,6 +1132,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param email    The e-mail address of the user
      * @param callback The callback handler
      */
+    @Override
     public void resetEmailPassword(String email, IServerCallback callback) {
         getClient().getAuthenticationService().resetEmailPassword(email, this);
     }
@@ -1098,6 +1152,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *                      list. http://getbraincloud.com/apidocs/apiref/#capi-mail
      * @param callback      The callback handler
      */
+    @Override
     public void resetEmailPasswordAdvanced(String email, String serviceParams, IServerCallback callback) {
         getClient().getAuthenticationService().resetEmailPasswordAdvanced(email, serviceParams, this);
     }
@@ -1116,6 +1171,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param tokenTtlInMinutes Token expiry time
      * @param callback          The callback handler
      */
+    @Override
     public void resetEmailPasswordWithExpiry(String email, int tokenTtlInMinutes, IServerCallback callback) {
         getClient().getAuthenticationService().resetEmailPasswordWithExpiry(email, tokenTtlInMinutes, this);
     }
@@ -1136,6 +1192,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param tokenTtlInMinutes Token expiry time
      * @param callback          The callback handler
      */
+    @Override
     public void resetEmailPasswordAdvancedWithExpiry(String email, String serviceParams, Integer tokenTtlInMinutes, IServerCallback callback) {
         getClient().getAuthenticationService().resetEmailPasswordAdvancedWithExpiry(email, serviceParams, tokenTtlInMinutes, this);
     }
@@ -1153,6 +1210,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param universalId The e-mail address of the user
      * @param callback    The callback handler
      */
+    @Override
     public void resetUniversalIdPassword(String universalId, IServerCallback callback) {
         getClient().getAuthenticationService().resetUniversalIdPassword(universalId, this);
     }
@@ -1172,6 +1230,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      *                      list. http://getbraincloud.com/apidocs/apiref/#capi-mail
      * @param callback      The callback handler
      */
+    @Override
     public void resetUniversalIdPasswordAdvanced(String universalId, String serviceParams, IServerCallback callback) {
         getClient().getAuthenticationService().resetUniversalIdPasswordAdvanced(universalId, serviceParams, this);
     }
@@ -1190,6 +1249,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param tokenTtlInMinutes Token expiry time
      * @param callback          The callback handler
      */
+    @Override
     public void resetUniversalIdPasswordWithExpiry(String universalId, int tokenTtlInMinutes, IServerCallback callback) {
         getClient().getAuthenticationService().resetUniversalIdPasswordWithExpiry(universalId, tokenTtlInMinutes, this);
     }
@@ -1210,6 +1270,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param tokenTtlInMinutes Token expiry time
      * @param callback          The callback handler
      */
+    @Override
     public void resetUniversalIdPasswordAdvancedWithExpiry(String universalId, String serviceParams, Integer tokenTtlInMinutes, IServerCallback callback) {
         getClient().getAuthenticationService().resetUniversalIdPasswordAdvancedWithExpiry(universalId, serviceParams, tokenTtlInMinutes, this);
     }
@@ -1217,6 +1278,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     /**
      * Run callbacks, to be called once per frame from your main thread
      */
+    @Override
     public void runCallbacks() {
         getClient().runCallbacks();
     }
@@ -1229,6 +1291,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param serviceOperation - requested operation
      * @param jsonData         - returned data from the server
      */
+    @Override
     public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
         if (serviceName.equals(ServiceName.authenticationV2) && serviceOperation.equals(ServiceOperation.AUTHENTICATE)) {
             try {
@@ -1259,6 +1322,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
      * @param reasonCode       The brainCloud reason code (see reason codes on apidocs site)
      * @param jsonError        The error json string
      */
+    @Override
     public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
 
         if (statusCode == 202 && reasonCode == ReasonCodes.MANUAL_REDIRECT) // This should only happen on auth calls
@@ -1307,172 +1371,135 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
 
 
     // brainCloud Services
-    public AppStoreService getAppStoreService() {
-        return _client.getAppStoreService();
-    }
-
-    public AsyncMatchService getAsyncMatchService() {
-        return _client.getAsyncMatchService();
-    }
-
-    public AuthenticationService getAuthenticationService() {
-        return _client.getAuthenticationService();
-    }
-
-    public ChatService getChatService() {
-        return _client.getChatService();
-    }
-
-    public DataStreamService getDataStreamService() {
-        return _client.getDataStreamService();
-    }
-
-    public EntityService getEntityService() {
-        return _client.getEntityService();
-    }
-
-    public EventService getEventService() {
-        return _client.getEventService();
-    }
-
-    public FileService getFileService() {
-        return _client.getFileService();
-    }
-
-    public FriendService getFriendService() {
-        return _client.getFriendService();
-    }
-
-    public GamificationService getGamificationService() {
-        return _client.getGamificationService();
-    }
-
-    public GlobalAppService getGlobalAppService() {
-        return _client.getGlobalAppService();
-    }
-
-    public GlobalEntityService getGlobalEntityService() {
-        return _client.getGlobalEntityService();
-    }
-
-    public GlobalStatisticsService getGlobalStatisticsService() {
-        return _client.getGlobalStatisticsService();
-    }
-
-    public GroupService getGroupService() {
-        return _client.getGroupService();
-    }
+    @Override
+    public AppStoreService getAppStoreService() { return _client.getAppStoreService(); }
 
     @Override
-    public GroupFileService getGroupFileService() {
-        return _client.getGroupFileService();
-    }
+    public AsyncMatchService getAsyncMatchService() { return _client.getAsyncMatchService(); }
 
-    public IdentityService getIdentityService() {
-        return _client.getIdentityService();
-    }
+    @Override
+    public AuthenticationService getAuthenticationService() { return _client.getAuthenticationService(); }
 
-    public LobbyService getLobbyService() {
-        return _client.getLobbyService();
-    }
+    @Override
+    public ChatService getChatService() { return _client.getChatService(); }
 
-    public MailService getMailService() {
-        return _client.getMailService();
-    }
+    @Override
+    public DataStreamService getDataStreamService() { return _client.getDataStreamService(); }
 
-    public MessagingService getMessagingService() {
-        return _client.getMessagingService();
-    }
+    @Override
+    public EntityService getEntityService() { return _client.getEntityService(); }
 
-    public MatchMakingService getMatchMakingService() {
-        return _client.getMatchMakingService();
-    }
+    @Override
+    public EventService getEventService() { return _client.getEventService(); }
 
-    public OneWayMatchService getOneWayMatchService() {
-        return _client.getOneWayMatchService();
-    }
+    @Override
+    public FileService getFileService() { return _client.getFileService(); }
 
-    public PlaybackStreamService getPlaybackStreamService() {
-        return _client.getPlaybackStreamService();
-    }
+    @Override
+    public FriendService getFriendService() { return _client.getFriendService(); }
 
-    public PlayerStateService getPlayerStateService() {
-        return _client.getPlayerStateService();
-    }
+    @Override
+    public GamificationService getGamificationService() { return _client.getGamificationService(); }
 
-    public PlayerStatisticsService getPlayerStatisticsService() {
-        return _client.getPlayerStatisticsService();
-    }
+    @Override
+    public GlobalAppService getGlobalAppService() { return _client.getGlobalAppService(); }
 
-    public PlayerStatisticsEventService getPlayerStatisticsEventService() {
-        return _client.getPlayerStatisticsEventService();
-    }
+    @Override
+    public GlobalEntityService getGlobalEntityService() { return _client.getGlobalEntityService(); }
 
-    public PresenceService getPresenceService() {
-        return _client.getPresenceService();
-    }
+    @Override
+    public GlobalStatisticsService getGlobalStatisticsService() { return _client.getGlobalStatisticsService(); }
 
-    public VirtualCurrencyService getVirtualCurrencyService() {
-        return _client.getVirtualCurrencyService();
-    }
+    @Override
+    public GroupService getGroupService() { return _client.getGroupService(); }
 
-    public ProfanityService getProfanityService() {
-        return _client.getProfanityService();
-    }
+    @Override
+    public GroupFileService getGroupFileService() { return _client.getGroupFileService(); }
 
-    public PushNotificationService getPushNotificationService() {
-        return _client.getPushNotificationService();
-    }
+    @Override
+    public IdentityService getIdentityService() { return _client.getIdentityService(); }
 
-    public RedemptionCodeService getRedemptionCodeService() {
-        return _client.getRedemptionCodeService();
-    }
+    @Override
+    public LobbyService getLobbyService() { return _client.getLobbyService(); }
 
-    public RelayService getRelayService() {
-        return _client.getRelayService();
-    }
+    @Override
+    public MailService getMailService() { return _client.getMailService(); }
 
-    public RTTService getRTTService() {
-        return _client.getRTTService();
-    }
+    @Override
+    public MessagingService getMessagingService() { return _client.getMessagingService(); }
 
-    public S3HandlingService getS3HandlingService() {
-        return _client.getS3HandlingService();
-    }
+    @Override
+    public BlockchainService getBlockchainService() { return _client.getBlockchainService(); }
 
-    public ScriptService getScriptService() {
-        return _client.getScriptService();
-    }
+    @Override
+    public MatchMakingService getMatchMakingService() { return _client.getMatchMakingService(); }
 
-    public SocialLeaderboardService getSocialLeaderboardService() {
-        return _client.getSocialLeaderboardService();
-    }
+    @Override
+    public OneWayMatchService getOneWayMatchService() { return _client.getOneWayMatchService(); }
 
-    public SocialLeaderboardService getLeaderboardService() {
-        return _client.getSocialLeaderboardService();
-    }
+    @Override
+    public PlaybackStreamService getPlaybackStreamService() { return _client.getPlaybackStreamService(); }
 
-    public TimeService getTimeService() {
-        return _client.getTimeService();
-    }
+    @Override
+    public PlayerStateService getPlayerStateService() { return _client.getPlayerStateService(); }
 
-    public TournamentService getTournamentService() {
-        return _client.getTournamentService();
-    }
+    @Override
+    public PlayerStatisticsService getPlayerStatisticsService() { return _client.getPlayerStatisticsService(); }
 
-    public GlobalFileService getGlobalFileService() {
-        return _client.getGlobalFileService();
-    }
+    @Override
+    public PlayerStatisticsEventService getPlayerStatisticsEventService() { return _client.getPlayerStatisticsEventService(); }
 
-    public CustomEntityService getCustomEntityService() {
-        return _client.getCustomEntityService();
-    }
+    @Override
+    public PresenceService getPresenceService() { return _client.getPresenceService(); }
 
-    public ItemCatalogService getItemCatalogService() {
-        return _client.getItemCatalogService();
-    }
+    @Override
+    public VirtualCurrencyService getVirtualCurrencyService() { return _client.getVirtualCurrencyService(); }
 
-    public UserItemsService getUserItemsService() {
-        return _client.getUserItemsService();
-    }
+    @Override
+    public ProfanityService getProfanityService() { return _client.getProfanityService(); }
+
+    @Override
+    public PushNotificationService getPushNotificationService() { return _client.getPushNotificationService(); }
+
+    @Override
+    public RedemptionCodeService getRedemptionCodeService() {  return _client.getRedemptionCodeService(); }
+
+    @Override
+    public RelayService getRelayService() { return _client.getRelayService(); }
+
+    @Override
+    public RTTService getRTTService() { return _client.getRTTService(); }
+
+    @Override
+    public S3HandlingService getS3HandlingService() { return _client.getS3HandlingService(); }
+
+    @Override
+    public ScriptService getScriptService() { return _client.getScriptService(); }
+
+    @Override
+    public SocialLeaderboardService getSocialLeaderboardService() { return _client.getSocialLeaderboardService(); }
+
+    @Override
+    public SocialLeaderboardService getLeaderboardService() { return _client.getSocialLeaderboardService(); }
+
+    @Override
+    public TimeService getTimeService() { return _client.getTimeService(); }
+
+    @Override
+    public TournamentService getTournamentService() { return _client.getTournamentService(); }
+
+    @Override
+    public GlobalFileService getGlobalFileService() { return _client.getGlobalFileService(); }
+
+    @Override
+    public CustomEntityService getCustomEntityService() { return _client.getCustomEntityService(); }
+
+    @Override
+    public ItemCatalogService getItemCatalogService() { return _client.getItemCatalogService(); }
+
+    @Override
+    public UserItemsService getUserItemsService() { return _client.getUserItemsService(); }
+
+    @Override
+    public CampaignService getCampaignService() {  return _client.getCampaignService(); }
 }
