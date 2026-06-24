@@ -4,10 +4,6 @@ plugins {
     id 'signing'
 }
 
-signing {
-    useGpgCmd()
-}
-
 mavenPublishing {
     publishToMavenCentral()
 
