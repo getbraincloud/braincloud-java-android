@@ -11,7 +11,7 @@ mavenPublishing {
 }
 
 android {
-    namespace 'com.bitheads'
+    namespace = 'com.bitheads'
     compileSdk 33
 
     defaultConfig {
