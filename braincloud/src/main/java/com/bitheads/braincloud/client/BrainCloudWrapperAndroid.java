@@ -626,13 +626,13 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     }
 
     /**
-     *Authenticate the user using an apple id
+     * Authenticate the user using their Apple account and identityToken.
      *
-     * @param appleUserId  This can be the user id OR the email of the user for the account
+     * @param appleUserId   This can be the user id OR the email of the user for the account
      * @param identityToken The token confirming the user's identity
-     * @param forceCreate     Should a new profile be created for this user if the account
-     *                        does not exist?
-     * @param callback        The callback handler
+     * @param forceCreate   Should a new profile be created for this user if the account
+     *                      does not exist?
+     * @param callback      The callback handler
      */
     @Override
     public void authenticateApple(String appleUserId, String identityToken, boolean forceCreate, IServerCallback callback) {
@@ -641,6 +641,24 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         initializeIdentity(false);
 
         getClient().getAuthenticationService().authenticateApple(appleUserId, identityToken, forceCreate, this);
+    }
+
+    /**
+     * Authenticate the user using an epicAccountId and their authIdToken.
+     *
+     * @param epicAccountId LocalUserId retrieved from the EOS AuthInterface's Login method.
+     * @param authIdToken   IdToken string from the EOS AuthInterface's CopyIdToken method.
+     * @param forceCreate   Should a new profile be created for this user if the account
+     *                      does not exist?
+     * @param callback      The callback handler
+     */
+    @Override
+    public void authenticateEpicGames(String epicAccountId, String authIdToken, boolean forceCreate, IServerCallback callback) {
+        _authenticateCallback = callback;
+
+        initializeIdentity(false);
+
+        getClient().getAuthenticationService().authenticateEpicGames(epicAccountId, authIdToken, forceCreate, this);
     }
 
     /**
@@ -935,7 +953,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     }
 
     @Override
-    public void smartSwitchAuthenticateApple(String appleUserId, String token, boolean forceCreate, IServerCallback callback)
+    public void smartSwitchAuthenticateApple(String appleUserId, String identityToken, boolean forceCreate, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
             @Override
@@ -946,7 +964,29 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
                 resetStoredProfileId();
                 getClient().getAuthenticationService().clearSavedProfileId();
 
-                authenticateApple(appleUserId, token, forceCreate, callback);
+                authenticateApple(appleUserId, identityToken, forceCreate, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
+    }
+
+    @Override
+    public void smartSwitchAuthenticateEpicGames(String epicAccountId, String authIdToken, boolean forceCreate, IServerCallback callback)
+    {
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
+
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateEpicGames(epicAccountId, authIdToken, forceCreate, callback);
             }
 
             @Override
