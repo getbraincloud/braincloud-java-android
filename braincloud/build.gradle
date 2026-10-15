@@ -11,7 +11,10 @@ signing {
 mavenPublishing {
     publishToMavenCentral()
 
-    signAllPublications()
+    // Local installs can skip signing with -PRELEASE_SIGNING_ENABLED=false.
+    if (project.findProperty("RELEASE_SIGNING_ENABLED")?.toString() != "false") {
+        signAllPublications()
+    }
 }
 
 android {
@@ -54,11 +57,11 @@ dependencies {
     implementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    api 'com.bitheads:braincloud-java:6.0.0'
+    api 'com.bitheads:braincloud-java:6.1.0-SNAPSHOT'
 }
     
 mavenPublishing {
-    coordinates("com.bitheads", "braincloud-java-android", "6.0.0")
+    coordinates("com.bitheads", "braincloud-java-android", "6.1.0")
 
     pom {
         name = 'brainCloud Java API (Android)'
