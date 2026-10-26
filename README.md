@@ -37,7 +37,8 @@ Java/Android examples here: https://github.com/getbraincloud/examples-java
 
 Here are a few common errors that you may see on your first attempt to connect to brainCloud.
 
-- **App id not set**: Verify you've set up the app id and app secret correctly in the `initialize()` method.
+- **No braincloud.cfg found**: Pick an app in the brainCloud tool window and check `app/src/main/resources/braincloud.cfg` exists.
+- **App id not set**: If you initialize with the app ID and secret, check they're set correctly in `initialize()`.
 - **Platform not enabled**: Verify you've enabled your platform on the portal.
 
 If you're still having issues, log into the portal and give us a shout through the help system (bottom right icon with the question mark and chat bubble).
@@ -61,16 +62,29 @@ It is recommended to use the wrapper by default.
 ![wrapper](/Screenshots/bc-wrapper.png?raw=true)
 
 ## How do I initialize brainCloud?
-If using the wrapper use the following code.
+
+### With the brainCloud Java plugin (recommended)
+Keeps the app secret out of your code.
+
+1. Add the `braincloud-java-android` dependency. Android Studio offers the **brainCloud Java** plugin, or install it from **Settings → Plugins → Marketplace** ([plugin page](https://plugins.jetbrains.com/plugin/34823-braincloud-java)).
+2. Open the **brainCloud** tool window, log in, and pick your team and app (or create one).
+3. The plugin writes `app/src/main/resources/braincloud.cfg` and gitignores it.
+4. Initialize with the application context:
 ```java
 _bc = new BrainCloudWrapperAndroid(); // optionally pass in a _wrapperName
-_bc.initialize(_appId, _secret, _appVersion); // optionally pass in an _applicationContext
+if (!_bc.init(_applicationContext)) {
+    // no braincloud.cfg found
+}
 ```
-On Android, to use the wrapper serialization features, you also need to pass in or set the application context.
+
+To switch apps or pick up a new secret, pick the app again or use **Tools → brainCloud → Refresh Config**. For CI, keep `braincloud.cfg` as a secret file and copy it into `app/src/main/resources/` before building. R8 keep rules are included.
+
+### With the app ID and secret
 ```java
-_bc.setContext(_applicationContext);
+_bc = new BrainCloudWrapperAndroid();
+_bc.initialize(_applicationContext, _appId, _secret, _appVersion, _serverUrl);
 ```
-Your _appId, _secret, is set on the brainCloud dashboard. Under Design | Core App Info > Application IDs
+Your app ID and secret are in the portal under **Design | Core App Info > Application IDs**.
 
 ![wrapper](/Screenshots/bc-ids.png?raw=true)
 

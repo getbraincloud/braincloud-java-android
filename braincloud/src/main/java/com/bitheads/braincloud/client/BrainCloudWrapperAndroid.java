@@ -52,6 +52,9 @@ import com.bitheads.braincloud.services.UserItemsService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Map;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
+import java.util.function.Function;
 import android.os.Build;
 
 /**
@@ -144,10 +147,20 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     private class InitializeParams
     {
         public String appId = "";
-        public String secretKey = "";
         public String appVersion = "";
         public String serverUrl = "";
-        public Map<String, String> secretMap = null;
+        public boolean appMap = false;
+    }
+
+    private static boolean s_configHintShown = false;
+
+    // One-time tip to use braincloud.cfg.
+    private static void showConfigHint()
+    {
+        if (!s_configHintShown) {
+            s_configHintShown = true;
+            System.out.println("brainCloud | Tip: use the brainCloud Java plugin and init() to keep the app secret out of your code.");
+        }
     }
     private InitializeParams m_initializeParams = new InitializeParams();
 
@@ -163,10 +176,10 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         setContext(ctx);
 
         m_initializeParams.appId = appId;
-        m_initializeParams.secretKey = secretKey;
         m_initializeParams.appVersion = appVersion;
         m_initializeParams.serverUrl = _DEFAULT_URL;
-        m_initializeParams.secretMap = null;
+        m_initializeParams.appMap = false;
+        showConfigHint();
 
         if(_client == null)
         {
@@ -193,10 +206,10 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         setContext(ctx);
 
         m_initializeParams.appId = appId;
-        m_initializeParams.secretKey = secretKey;
         m_initializeParams.appVersion = appVersion;
         m_initializeParams.serverUrl = serverUrl;
-        m_initializeParams.secretMap = null;
+        m_initializeParams.appMap = false;
+        showConfigHint();
 
         if(_client == null)
         {
@@ -212,6 +225,73 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
 
 
     /**
+     * Initializes with an app profile instead of the app secret.
+     *
+     * @param ctx        The application context
+     * @param appId      The app id
+     * @param appProfile Signs a request body, returning the lowercase hex signature
+     * @param appVersion The app version
+     * @param serverUrl  The url to the brainCloud server
+     */
+    public void initialize(Context ctx, String appId, Function<byte[], String> appProfile, String appVersion, String serverUrl) {
+        setContext(ctx);
+
+        m_initializeParams.appId = appId;
+        m_initializeParams.appVersion = appVersion;
+        m_initializeParams.serverUrl = serverUrl;
+        m_initializeParams.appMap = false;
+
+        if(_client == null)
+        {
+            _client = new BrainCloudClient();
+        }
+        detectPlatform();
+
+        getClient().initialize(serverUrl, appProfile, appId, appVersion);
+    }
+
+    /**
+     * Initializes from braincloud.cfg (brainCloud plugin) in the app module's src/main/resources.
+     *
+     * @param ctx The application context
+     * @return false if no config was found
+     */
+    public boolean init(final Context ctx) {
+        final boolean[] used = { false };
+        try {
+            // Reflective so the SDK builds without the config reader.
+            Class<?> config = Class.forName("com.bitheads.braincloud.support.NativeConfig");
+            Class<?> callbackType = Class.forName("com.bitheads.braincloud.support.NativeConfig$Callback");
+            Object callback = Proxy.newProxyInstance(callbackType.getClassLoader(), new Class<?>[] { callbackType },
+                (proxy, method, args) -> {
+                    if ("use".equals(method.getName()) && args != null && args.length == 4) {
+                        @SuppressWarnings("unchecked")
+                        Function<byte[], String> appProfile = (Function<byte[], String>) args[1];
+                        initialize(ctx, (String) args[0], appProfile, (String) args[3], (String) args[2]);
+                        used[0] = true;
+                        return null;
+                    }
+                    if ("toString".equals(method.getName())) return "brainCloudConfigCallback";
+                    if ("hashCode".equals(method.getName())) return System.identityHashCode(proxy);
+                    if ("equals".equals(method.getName())) return proxy == args[0];
+                    return null;
+                });
+            Method useConfig = config.getMethod("useConfig", callbackType);
+            useConfig.invoke(null, callback);
+        } catch (ClassNotFoundException e) {
+            System.out.println("ERROR | brainCloud init(): this SDK build has no braincloud.cfg reader.");
+            return false;
+        } catch (ReflectiveOperationException | RuntimeException e) {
+            System.out.println("ERROR | brainCloud init(): could not read braincloud.cfg - " + e);
+            return false;
+        }
+        if (!used[0]) {
+            System.out.println("ERROR | brainCloud init(): no braincloud.cfg found. Pick an app in the brainCloud tool window.");
+        }
+        return used[0];
+    }
+
+    /**
      * Method initializes the BrainCloudClient. Make sure to
      * set the context via setContext() if you're using this method.
      *
@@ -224,10 +304,10 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     public void initialize(String appId, String secretKey, String appVersion, String serverUrl) {
 
         m_initializeParams.appId = appId;
-        m_initializeParams.secretKey = secretKey;
         m_initializeParams.appVersion = appVersion;
         m_initializeParams.serverUrl = serverUrl;
-        m_initializeParams.secretMap = null;
+        m_initializeParams.appMap = false;
+        showConfigHint();
 
         if(_client == null)
         {
@@ -252,10 +332,10 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     public void initialize(String appId, String secretKey, String appVersion) {
 
         m_initializeParams.appId = appId;
-        m_initializeParams.secretKey = secretKey;
         m_initializeParams.appVersion = appVersion;
         m_initializeParams.serverUrl = _DEFAULT_URL;
-        m_initializeParams.secretMap = null;
+        m_initializeParams.appMap = false;
+        showConfigHint();
 
         if(_client == null)
         {
@@ -271,10 +351,9 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     public void initializeWithApps(String url, String appId, Map<String, String> secretMap, String version, String companyName, String appName)
     {
         m_initializeParams.appId = appId;
-        m_initializeParams.secretKey = "";
         m_initializeParams.appVersion = version;
         m_initializeParams.serverUrl = url;
-        m_initializeParams.secretMap = secretMap;
+        m_initializeParams.appMap = true;
 
         if(_client == null)
         {
@@ -299,10 +378,9 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     public void initializeWithApps(String url, String defaultAppId, Map<String, String> secretMap, String version)
     {
         m_initializeParams.appId = defaultAppId;
-        m_initializeParams.secretKey = "";
         m_initializeParams.appVersion = version;
         m_initializeParams.serverUrl = url;
-        m_initializeParams.secretMap = secretMap;
+        m_initializeParams.appMap = true;
 
         if(_client == null)
         {
@@ -626,13 +704,13 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     }
 
     /**
-     *Authenticate the user using an apple id
+     * Authenticate the user using their Apple account and identityToken.
      *
-     * @param appleUserId  This can be the user id OR the email of the user for the account
+     * @param appleUserId   This can be the user id OR the email of the user for the account
      * @param identityToken The token confirming the user's identity
-     * @param forceCreate     Should a new profile be created for this user if the account
-     *                        does not exist?
-     * @param callback        The callback handler
+     * @param forceCreate   Should a new profile be created for this user if the account
+     *                      does not exist?
+     * @param callback      The callback handler
      */
     @Override
     public void authenticateApple(String appleUserId, String identityToken, boolean forceCreate, IServerCallback callback) {
@@ -641,6 +719,24 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
         initializeIdentity(false);
 
         getClient().getAuthenticationService().authenticateApple(appleUserId, identityToken, forceCreate, this);
+    }
+
+    /**
+     * Authenticate the user using an epicAccountId and their authIdToken.
+     *
+     * @param epicAccountId LocalUserId retrieved from the EOS AuthInterface's Login method.
+     * @param authIdToken   IdToken string from the EOS AuthInterface's CopyIdToken method.
+     * @param forceCreate   Should a new profile be created for this user if the account
+     *                      does not exist?
+     * @param callback      The callback handler
+     */
+    @Override
+    public void authenticateEpicGames(String epicAccountId, String authIdToken, boolean forceCreate, IServerCallback callback) {
+        _authenticateCallback = callback;
+
+        initializeIdentity(false);
+
+        getClient().getAuthenticationService().authenticateEpicGames(epicAccountId, authIdToken, forceCreate, this);
     }
 
     /**
@@ -935,7 +1031,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
     }
 
     @Override
-    public void smartSwitchAuthenticateApple(String appleUserId, String token, boolean forceCreate, IServerCallback callback)
+    public void smartSwitchAuthenticateApple(String appleUserId, String identityToken, boolean forceCreate, IServerCallback callback)
     {
         getIdentitiesCallback(new IServerCallback() {
             @Override
@@ -946,7 +1042,29 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
                 resetStoredProfileId();
                 getClient().getAuthenticationService().clearSavedProfileId();
 
-                authenticateApple(appleUserId, token, forceCreate, callback);
+                authenticateApple(appleUserId, identityToken, forceCreate, callback);
+            }
+
+            @Override
+            public void serverError(ServiceName serviceName, ServiceOperation serviceOperation, int statusCode, int reasonCode, String jsonError) {
+                callback.serverError(serviceName, serviceOperation, statusCode, reasonCode, jsonError);
+            }
+        });
+    }
+
+    @Override
+    public void smartSwitchAuthenticateEpicGames(String epicAccountId, String authIdToken, boolean forceCreate, IServerCallback callback)
+    {
+        getIdentitiesCallback(new IServerCallback() {
+            @Override
+            public void serverCallback(ServiceName serviceName, ServiceOperation serviceOperation, JSONObject jsonData) {
+
+                // Clear IDs
+                resetStoredAnonymousId();
+                resetStoredProfileId();
+                getClient().getAuthenticationService().clearSavedProfileId();
+
+                authenticateEpicGames(epicAccountId, authIdToken, forceCreate, callback);
             }
 
             @Override
@@ -1335,23 +1453,11 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
                 m_initializeParams.serverUrl = data.has("redirect_url") ? data.getString("redirect_url") : m_initializeParams.serverUrl;
                 String newAppId = data.has("redirect_appid") ? data.getString("redirect_appid") : null;
 
-                // re-initialize the client with our app info
-                if (m_initializeParams.secretMap == null)
-                {
-                    if (newAppId != null) m_initializeParams.appId = newAppId;
-                    getClient().initialize(m_initializeParams.serverUrl,
-                            m_initializeParams.appId,
-                            m_initializeParams.secretKey,
-                            m_initializeParams.appVersion);
-                }
-                else
-                {
-                    // For initialize with apps, we ignore the app id
-                    getClient().initializeWithApps(m_initializeParams.serverUrl,
-                            m_initializeParams.appId,
-                            m_initializeParams.secretMap,
-                            m_initializeParams.appVersion);
-                }
+                // re-point at the redirect; initialize with apps ignores the new app id
+                if (!m_initializeParams.appMap && newAppId != null) m_initializeParams.appId = newAppId;
+                getClient().reinitialize(m_initializeParams.serverUrl,
+                        m_initializeParams.appId,
+                        m_initializeParams.appVersion);
 
                 initializeIdentity(true);
                 getClient().getAuthenticationService().retryPreviousAuthenticate(this);
