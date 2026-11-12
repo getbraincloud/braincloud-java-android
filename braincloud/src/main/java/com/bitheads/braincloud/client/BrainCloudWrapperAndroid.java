@@ -286,7 +286,7 @@ public class BrainCloudWrapperAndroid implements IServerCallback, IBrainCloudWra
             return false;
         }
         if (!used[0]) {
-            System.out.println("ERROR | brainCloud init(): no braincloud.cfg found. Pick an app in the brainCloud tool window.");
+            System.out.println("ERROR | brainCloud init(): braincloud.cfg is missing or can't be read by this build. Pick the app again in the brainCloud tool window.");
         }
         return used[0];
     }

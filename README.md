@@ -37,7 +37,7 @@ Java/Android examples here: https://github.com/getbraincloud/examples-java
 
 Here are a few common errors that you may see on your first attempt to connect to brainCloud.
 
-- **No braincloud.cfg found**: Pick an app in the brainCloud tool window and check `app/src/main/resources/braincloud.cfg` exists.
+- **braincloud.cfg is missing or can't be read**: Pick the app again in the brainCloud tool window. 
 - **App id not set**: If you initialize with the app ID and secret, check they're set correctly in `initialize()`.
 - **Platform not enabled**: Verify you've enabled your platform on the portal.
 
@@ -68,16 +68,16 @@ Keeps the app secret out of your code.
 
 1. Add the `braincloud-java-android` dependency. Android Studio offers the **brainCloud Java** plugin, or install it from **Settings → Plugins → Marketplace** ([plugin page](https://plugins.jetbrains.com/plugin/34823-braincloud-java)).
 2. Open the **brainCloud** tool window, log in, and pick your team and app (or create one).
-3. The plugin writes `app/src/main/resources/braincloud.cfg` and gitignores it.
+3. The plugin writes `app/src/main/resources/braincloud.cfg` and `app/src/main/java/braincloud/BrainCloudTuning.java`, and gitignores both. The config only reads in a build that compiles that class, so keep the two together.
 4. Initialize with the application context:
 ```java
 _bc = new BrainCloudWrapperAndroid(); // optionally pass in a _wrapperName
 if (!_bc.init(_applicationContext)) {
-    // no braincloud.cfg found
+    // braincloud.cfg missing or unreadable
 }
 ```
 
-To switch apps or pick up a new secret, pick the app again or use **Tools → brainCloud → Refresh Config**. For CI, keep `braincloud.cfg` as a secret file and copy it into `app/src/main/resources/` before building. R8 keep rules are included.
+To switch apps or pick up a new secret, pick the app again or use **Tools → brainCloud → Refresh Config**. 
 
 ### With the app ID and secret
 ```java
